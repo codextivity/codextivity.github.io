@@ -1,853 +1,796 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PANN VANDET — AI Engineer</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pann Vandet · AI Engineer</title>
+<meta name="description" content="Pann Vandet (codextivity), AI engineer. Computer vision systems that run on real hardware: a taekwondo coaching kiosk, PCB and PPE inspection, LLM tools. Three first-author SCI(E) papers.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Pann Vandet · AI Engineer">
+<meta property="og:description" content="Computer vision systems that run on real hardware: a taekwondo coaching kiosk, PCB and PPE inspection, LLM tools.">
+<meta property="og:url" content="https://codextivity.github.io/">
+<meta property="og:image" content="https://codextivity.github.io/images/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230E1218'/%3E%3Cpath d='M7 12V7h5M20 7h5v5M25 20v5h-5M12 25H7v-5' stroke='%237EA6EE' stroke-width='2.5' fill='none'/%3E%3Ccircle cx='16' cy='16' r='3.5' fill='%23E8705F'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,500..800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F3F5F8;
+    --surface: #FFFFFF;
+    --thumb: #E8ECF2;
+    --ink: #121822;
+    --muted: #566275;
+    --line: #D9DFE8;
+    --accent: #1E4E9C;
+    --accent-soft: #E3EBF8;
+    --hong: #B8322A;
+    --on-accent: #FFFFFF;
+    --fig: #3A4658;
 
-    :root {
-      --bg:       #0a0f1e;
-      --surface:  #111827;
-      --surface2: #1a2236;
-      --border:   #1e2d47;
-      --accent:   #2563eb;
-      --accent2:  #3b82f6;
-      --text:     #f1f5f9;
-      --muted:    #94a3b8;
-      --tag-bg:   #1e3a5f;
-      --tag-text: #93c5fd;
-      --green:    #10b981;
-      --mono:     'JetBrains Mono', monospace;
+    /* the camera panel is a screen, so it stays dark in both themes */
+    --cam: #0B0F15;
+    --cam-line: #1B2330;
+    --cam-ink: #D5DEEA;
+    --cam-muted: #7D8AA0;
+
+    --display: "Archivo", "Malgun Gothic", system-ui, sans-serif;
+    --body: "IBM Plex Sans", "Malgun Gothic", "Apple SD Gothic Neo", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+    --wrap: 1120px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0E1218;
+      --surface: #151A23;
+      --thumb: #1A212C;
+      --ink: #E6EAF0;
+      --muted: #9AA6B8;
+      --line: #262F3D;
+      --accent: #7EA6EE;
+      --accent-soft: #1B2A44;
+      --hong: #E8705F;
+      --on-accent: #0E1218;
+      --fig: #B9C4D4;
     }
-
-    html { scroll-behavior: smooth; }
-
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: 'Inter', sans-serif;
-      font-size: 15px;
-      line-height: 1.6;
-    }
-
-    /* ── NAV ── */
-    nav {
-      position: fixed;
-      top: 0; left: 0; right: 0;
-      z-index: 100;
-      background: rgba(10,15,30,0.92);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 2rem;
-      height: 56px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .nav-logo {
-      font-family: var(--mono);
-      font-size: 14px;
-      color: var(--accent2);
-      letter-spacing: 0.05em;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      list-style: none;
-    }
-
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 13px;
-      transition: color 0.2s;
-    }
-
-    .nav-links a:hover { color: var(--text); }
-
-    /* ── SECTIONS ── */
-    section { padding: 5rem 0; }
-    .container { max-width: 900px; margin: 0 auto; padding: 0 2rem; }
-
-    /* ── HERO ── */
-    #hero {
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      padding-top: 56px;
-      background:
-        radial-gradient(ellipse 60% 50% at 70% 40%, rgba(37,99,235,0.12) 0%, transparent 70%),
-        var(--bg);
-    }
-
-    .hero-inner {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 2rem;
-    }
-
-    .hero-label {
-      font-family: var(--mono);
-      font-size: 13px;
-      color: var(--accent2);
-      margin-bottom: 1.5rem;
-      letter-spacing: 0.08em;
-    }
-
-    .hero-name {
-      font-size: clamp(2.4rem, 5vw, 3.8rem);
-      font-weight: 700;
-      line-height: 1.1;
-      margin-bottom: 1rem;
-      letter-spacing: -0.02em;
-    }
-
-    .hero-name span { color: var(--accent2); }
-
-    .hero-role {
-      font-size: 1.15rem;
-      color: var(--muted);
-      max-width: 520px;
-      margin-bottom: 2.5rem;
-      line-height: 1.7;
-    }
-
-    .hero-stats {
-      display: flex;
-      gap: 3rem;
-      margin-bottom: 2.5rem;
-    }
-
-    .stat-item { text-align: left; }
-
-    .stat-num {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--text);
-      line-height: 1;
-    }
-
-    .stat-label {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .hero-cta {
-      display: flex;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    .btn-primary {
-      background: var(--accent);
-      color: #fff;
-      padding: 0.65rem 1.4rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: background 0.2s;
-    }
-
-    .btn-primary:hover { background: var(--accent2); }
-
-    .btn-ghost {
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 0.65rem 1.4rem;
-      border-radius: 6px;
-      text-decoration: none;
-      font-size: 14px;
-      font-weight: 500;
-      transition: border-color 0.2s, color 0.2s;
-    }
-
-    .btn-ghost:hover { border-color: var(--accent2); color: var(--text); }
-
-    /* ── SECTION HEADER ── */
-    .section-header {
-      margin-bottom: 2.5rem;
-    }
-
-    .section-tag {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--accent2);
-      letter-spacing: 0.1em;
-      margin-bottom: 0.5rem;
-    }
-
-    .section-title {
-      font-size: 1.7rem;
-      font-weight: 700;
-      letter-spacing: -0.02em;
-    }
-
-    /* ── ABOUT ── */
-    #about { background: var(--surface); }
-
-    .about-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3rem;
-      align-items: start;
-    }
-
-    .about-text p {
-      color: var(--muted);
-      line-height: 1.8;
-      margin-bottom: 1rem;
-    }
-
-    .about-text strong { color: var(--text); }
-
-    .about-facts {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .fact-item {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1rem 1.2rem;
-    }
-
-    .fact-label {
-      font-size: 11px;
-      font-family: var(--mono);
-      color: var(--accent2);
-      margin-bottom: 4px;
-      letter-spacing: 0.05em;
-    }
-
-    .fact-value {
-      font-size: 14px;
-      color: var(--text);
-      font-weight: 500;
-    }
-
-    /* ── PROJECTS ── */
-    #projects { background: var(--bg); }
-
-    .project-group-label {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      margin-bottom: 1rem;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--border);
-    }
-
-    .projects-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 1.2rem;
-      margin-bottom: 2rem;
-    }
-
-    .project-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 1.4rem;
-      transition: border-color 0.2s, transform 0.2s;
-    }
-
-    .project-card:hover {
-      border-color: var(--accent2);
-      transform: translateY(-2px);
-    }
-
-    .project-icon {
-      font-size: 1.5rem;
-      margin-bottom: 0.8rem;
-    }
-
-    .project-title {
-      font-size: 15px;
-      font-weight: 600;
-      margin-bottom: 0.5rem;
-      color: var(--text);
-    }
-
-    .project-desc {
-      font-size: 13px;
-      color: var(--muted);
-      line-height: 1.6;
-      margin-bottom: 1rem;
-    }
-
-    .project-metric {
-      font-family: var(--mono);
-      font-size: 12px;
-      color: var(--green);
-      margin-bottom: 1rem;
-    }
-
-    .project-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-bottom: 1rem;
-    }
-
-    .tag {
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      font-size: 11px;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-family: var(--mono);
-    }
-
-    .project-links {
-      display: flex;
-      gap: 0.8rem;
-    }
-
-    .link-btn {
-      font-size: 12px;
-      color: var(--accent2);
-      text-decoration: none;
-      border: 1px solid var(--border);
-      padding: 4px 10px;
-      border-radius: 4px;
-      transition: border-color 0.2s;
-    }
-
-    .link-btn:hover { border-color: var(--accent2); }
-
-    .link-btn.no-link {
-      color: var(--muted);
-      cursor: default;
-      opacity: 0.6;
-    }
-
-    /* Professional cards - slightly different style */
-    .projects-grid.professional .project-card {
-      border-style: dashed;
-      opacity: 0.85;
-    }
-
-    /* ── TECH STACK ── */
-    #stack { background: var(--surface); }
-
-    .stack-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 1.2rem;
-    }
-
-    .stack-group {
-      background: var(--surface2);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 1.2rem;
-    }
-
-    .stack-group-title {
-      font-size: 12px;
-      font-family: var(--mono);
-      color: var(--accent2);
-      margin-bottom: 0.8rem;
-      letter-spacing: 0.05em;
-    }
-
-    .stack-items {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-    }
-
-    .stack-item {
-      font-size: 13px;
-      color: var(--muted);
-      padding: 3px 0;
-    }
-
-    /* ── RESEARCH ── */
-    #research { background: var(--bg); }
-
-    .paper-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .paper-item {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      border-radius: 0 8px 8px 0;
-      padding: 1.2rem 1.4rem;
-    }
-
-    .paper-year {
-      font-family: var(--mono);
-      font-size: 11px;
-      color: var(--accent2);
-      margin-bottom: 4px;
-    }
-
-    .paper-title {
-      font-size: 14px;
-      font-weight: 500;
-      color: var(--text);
-      line-height: 1.5;
-      margin-bottom: 6px;
-    }
-
-    .paper-meta {
-      font-size: 12px;
-      color: var(--muted);
-    }
-
-    .paper-meta span {
-      color: var(--green);
-      font-weight: 500;
-    }
-
-    /* ── CONTACT ── */
-    #contact {
-      background: var(--surface);
-      text-align: center;
-    }
-
-    .contact-desc {
-      color: var(--muted);
-      max-width: 480px;
-      margin: 0 auto 2rem;
-      line-height: 1.7;
-    }
-
-    .contact-links {
-      display: flex;
-      justify-content: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-    }
-
-    /* ── FOOTER ── */
-    footer {
-      background: var(--bg);
-      border-top: 1px solid var(--border);
-      padding: 1.5rem 2rem;
-      text-align: center;
-      font-size: 12px;
-      color: var(--muted);
-      font-family: var(--mono);
-    }
-
-    /* ── RESPONSIVE ── */
-    @media (max-width: 700px) {
-      .about-grid { grid-template-columns: 1fr; }
-      .projects-grid { grid-template-columns: 1fr; }
-      .stack-grid { grid-template-columns: 1fr 1fr; }
-      .hero-stats { gap: 1.5rem; }
-      nav .nav-links { display: none; }
-    }
-
-    @media (max-width: 480px) {
-      .stack-grid { grid-template-columns: 1fr; }
-    }
-  </style>
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1218; --surface: #151A23; --thumb: #1A212C; --ink: #E6EAF0; --muted: #9AA6B8;
+    --line: #262F3D; --accent: #7EA6EE; --accent-soft: #1B2A44; --hong: #E8705F; --on-accent: #0E1218; --fig: #B9C4D4;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font: 400 16px/1.65 var(--body);
+  }
+  h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; }
+  p { margin: 0; }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 2px; }
+  img, svg { display: block; max-width: 100%; }
+  .wrap { max-width: var(--wrap); margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+  .mono { font-family: var(--mono); }
+
+  /* ── corner brackets: the page's one motif, borrowed from detection boxes ── */
+  .frame { position: relative; --c: var(--accent); }
+  .frame::after {
+    content: "";
+    position: absolute;
+    inset: 8px;
+    pointer-events: none;
+    --l: 16px;
+    --w: 2px;
+    background:
+      linear-gradient(var(--c) 0 0) left top / var(--l) var(--w),
+      linear-gradient(var(--c) 0 0) left top / var(--w) var(--l),
+      linear-gradient(var(--c) 0 0) right top / var(--l) var(--w),
+      linear-gradient(var(--c) 0 0) right top / var(--w) var(--l),
+      linear-gradient(var(--c) 0 0) left bottom / var(--l) var(--w),
+      linear-gradient(var(--c) 0 0) left bottom / var(--w) var(--l),
+      linear-gradient(var(--c) 0 0) right bottom / var(--l) var(--w),
+      linear-gradient(var(--c) 0 0) right bottom / var(--w) var(--l);
+    background-repeat: no-repeat;
+    transition: inset .25s ease;
+  }
+
+  /* ── nav ── */
+  .nav {
+    position: sticky; top: 0; z-index: 10;
+    background: color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav .wrap { display: flex; align-items: center; justify-content: space-between; height: 56px; gap: 16px; }
+  .logo { font: 500 14px var(--mono); text-decoration: none; display: flex; align-items: center; gap: 8px; }
+  .logo i { width: 8px; height: 8px; border-radius: 50%; background: var(--hong); display: inline-block; }
+  .nav ul { display: flex; gap: 24px; list-style: none; margin: 0; padding: 0; }
+  .nav ul a { font-size: 14px; color: var(--muted); text-decoration: none; }
+  .nav ul a:hover { color: var(--ink); }
+
+  /* ── hero ── */
+  .hero { padding-top: 72px; padding-bottom: 88px; }
+  .hero .wrap { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr); gap: 56px; align-items: center; }
+  .eyebrow { font: 500 13px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+  .dots { display: inline-flex; gap: 5px; }
+  .dots i { width: 9px; height: 9px; border-radius: 50%; display: block; }
+  .dots i:first-child { background: var(--hong); }
+  .dots i:last-child { background: var(--accent); }
+  .name {
+    margin-top: 20px;
+    font-size: clamp(3.4rem, 11vw, 6.4rem);
+    font-weight: 800;
+    font-stretch: 125%;
+    font-variation-settings: "wdth" 125;
+    line-height: .92;
+    letter-spacing: -.02em;
+    text-transform: uppercase;
+  }
+  .name span { display: block; }
+  .name span:last-child { color: var(--accent); }
+  .lede { margin-top: 28px; font-size: 1.15rem; color: var(--muted); max-width: 34em; }
+  .lede strong { color: var(--ink); font-weight: 600; }
+  .proof { display: flex; flex-wrap: wrap; gap: 12px 36px; margin: 32px 0 0; padding: 0; list-style: none; }
+  .proof b { display: block; font: 700 1.9rem/1 var(--display); font-variant-numeric: tabular-nums; }
+  .proof span { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); }
+  .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 36px; }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 11px 18px; border-radius: 4px;
+    font: 500 14px var(--body); text-decoration: none;
+    border: 1px solid var(--line); color: var(--ink); background: var(--surface);
+    transition: border-color .2s, background .2s;
+  }
+  .btn:hover { border-color: var(--accent); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+  .btn.primary:hover { filter: brightness(1.08); }
+
+  /* camera panel */
+  .cam {
+    position: relative;
+    background: var(--cam);
+    border-radius: 6px;
+    aspect-ratio: 5 / 6;
+    max-height: 600px;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid #232C3A;
+    color: var(--cam-ink);
+    box-shadow: 0 1px 0 rgba(255,255,255,.04) inset, 0 24px 60px -30px rgba(10,20,40,.55);
+  }
+  .cam canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .hud { position: absolute; left: 0; right: 0; display: flex; justify-content: space-between; padding: 14px 16px; font: 500 11px var(--mono); letter-spacing: .06em; color: var(--cam-muted); text-transform: uppercase; }
+  .hud.top { top: 0; }
+  .live { display: inline-flex; align-items: center; gap: 7px; color: var(--cam-ink); }
+  .live i { width: 7px; height: 7px; border-radius: 50%; background: #E8705F; animation: blink 1.6s steps(2, start) infinite; }
+  @keyframes blink { to { visibility: hidden; } }
+  .readout {
+    position: absolute; left: 16px; right: 16px; bottom: 16px;
+    display: grid; gap: 10px;
+  }
+  .move { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+  .move .ko { font: 700 1.35rem/1.1 var(--body); color: #fff; }
+  .move .en { font: 500 12px var(--mono); color: var(--cam-muted); text-transform: uppercase; letter-spacing: .06em; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 4px; }
+  .steps i { height: 4px; border-radius: 2px; background: var(--cam-line); transition: background .3s; }
+  .steps i.on { background: #7EA6EE; }
+  .steps i.done { background: #3C5A8C; }
+  .cam-note { margin-top: 10px; font: 400 12px var(--mono); color: var(--muted); }
+
+  /* ── sections ── */
+  section.block { padding-top: 88px; padding-bottom: 88px; border-top: 1px solid var(--line); }
+  .head { display: grid; gap: 10px; margin-bottom: 40px; max-width: 46em; }
+  .label { font: 500 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--hong); }
+  .head h2 { font-size: clamp(1.8rem, 3.6vw, 2.6rem); font-weight: 750; font-variation-settings: "wdth" 112; letter-spacing: -.015em; line-height: 1.1; }
+  .head p { color: var(--muted); }
+
+  /* featured */
+  .feature {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 32px;
+  }
+  .feature-top { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, .9fr); gap: 40px; align-items: start; }
+  .kicker { font: 500 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .feature h3 { margin-top: 10px; font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 750; font-variation-settings: "wdth" 110; line-height: 1.1; }
+  .feature p { margin-top: 14px; color: var(--muted); max-width: 36em; }
+  .feature p strong { color: var(--ink); font-weight: 600; }
+  .stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: 4px; overflow: hidden; }
+  .stats div { background: var(--surface); padding: 16px 18px; }
+  .stats b { display: block; font: 700 1.6rem/1 var(--display); font-variant-numeric: tabular-nums; }
+  .stats span { display: block; margin-top: 6px; font-size: 13px; color: var(--muted); }
+  .figure { background: var(--thumb); border-radius: 4px; padding: 18px; overflow-x: auto; }
+  .figure img { min-width: 640px; width: 100%; height: auto; }
+  .feature-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 16px; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
+  .tags li { font: 500 12px var(--mono); color: var(--accent); background: var(--accent-soft); padding: 3px 8px; border-radius: 3px; }
+
+  /* project grid */
+  .sub { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 24px; margin-top: 64px; margin-bottom: 20px; }
+  .sub h3 { font-size: 1.25rem; font-weight: 700; }
+  .sub p { font: 400 12px var(--mono); color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+  .card {
+    display: flex; flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color .2s;
+  }
+  .card:hover { border-color: color-mix(in srgb, var(--accent) 55%, var(--line)); }
+  .card:hover .frame::after { inset: 14px; }
+  .thumb { aspect-ratio: 16 / 10; background: var(--thumb); overflow: hidden; }
+  .card.wide { grid-column: 1 / -1; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .card.wide .card-body { justify-content: center; padding: 32px; }
+  .thumb img, .thumb svg { width: 100%; height: 100%; object-fit: cover; }
+  .chip { position: absolute; left: 14px; bottom: 14px; font: 500 11px var(--mono); letter-spacing: .04em; background: var(--surface); color: var(--muted); padding: 3px 8px; border-radius: 3px; border: 1px solid var(--line); }
+  .card-body { display: flex; flex-direction: column; gap: 14px; padding: 22px 24px 24px; flex: 1; }
+  .card h4 { margin: 0; font: 650 1.15rem/1.25 var(--body); }
+  .card p { color: var(--muted); font-size: 15px; }
+  .metric { display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; margin-top: auto; padding-top: 4px; }
+  .metric b { font: 700 2rem/1 var(--display); font-variant-numeric: tabular-nums; color: var(--ink); }
+  .metric span { font-size: 13px; color: var(--muted); }
+  .links { display: flex; flex-wrap: wrap; gap: 16px; font: 500 13px var(--mono); }
+  .links a { color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent; }
+  .links a:hover { border-bottom-color: currentColor; }
+  .links .off { color: var(--muted); }
+
+  /* drawn thumbnails */
+  .t-bg { fill: var(--thumb); }
+  .t-grid { stroke: var(--line); stroke-width: 1; }
+  .t-fig { fill: none; stroke: var(--fig); stroke-width: 3.5; stroke-linecap: round; stroke-linejoin: round; }
+  .t-solid { fill: var(--fig); }
+  .t-box { fill: none; stroke: var(--accent); stroke-width: 1.5; }
+  .t-bad { fill: none; stroke: var(--hong); stroke-width: 1.5; }
+  .t-chip { fill: var(--accent); }
+  .t-chip-bad { fill: var(--hong); }
+  .t-chip-t { fill: var(--on-accent); font: 500 11px var(--mono); }
+  .t-node { fill: var(--surface); stroke: var(--line); stroke-width: 1.5; }
+  .t-node-on { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+  .t-t { fill: var(--ink); font: 500 13px var(--body); }
+  .t-s { fill: var(--muted); font: 400 11px var(--mono); }
+  .t-ln { fill: none; stroke: var(--muted); stroke-width: 1.4; }
+  .t-ln-on { fill: none; stroke: var(--accent); stroke-width: 1.8; }
+  .t-kp { fill: var(--hong); }
+  .t-tick { stroke: var(--muted); stroke-width: 2; }
+  .t-tick-on { stroke: var(--hong); stroke-width: 3; }
+
+  /* research */
+  .papers { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .paper { display: grid; grid-template-columns: 88px minmax(0, 1fr); gap: 24px; padding: 24px 0; border-bottom: 1px solid var(--line); }
+  .paper .yr { font: 500 1.4rem/1.2 var(--display); font-variant-numeric: tabular-nums; color: var(--accent); }
+  .paper a { font: 600 1.1rem/1.4 var(--body); text-decoration: none; }
+  .paper a:hover { color: var(--accent); }
+  .paper p { margin-top: 6px; font-size: 14px; color: var(--muted); }
+  .paper p b { color: var(--hong); font-weight: 500; }
+  .more { margin-top: 20px; font-size: 14px; color: var(--muted); }
+  .more a { color: var(--accent); }
+
+  /* about */
+  .about { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); gap: 56px; align-items: start; }
+  .about-text { display: grid; gap: 16px; color: var(--muted); max-width: 38em; }
+  .about-text strong { color: var(--ink); font-weight: 600; }
+  .facts { margin: 0; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .facts div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .facts dt { font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .facts dd { margin: 4px 0 0; font-weight: 500; }
+  .facts dd small { display: block; font-size: 13px; color: var(--muted); font-weight: 400; }
+
+  .stack { margin-top: 56px; display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .stack div { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 24px; padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .stack dt { font: 500 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: var(--accent); padding-top: 2px; }
+  .stack dd { margin: 0; color: var(--muted); }
+
+  /* contact */
+  .contact h2 { font-size: clamp(2rem, 5vw, 3.6rem); font-weight: 800; font-variation-settings: "wdth" 118; line-height: 1.02; letter-spacing: -.02em; max-width: 14em; }
+  .contact h2 span { color: var(--accent); }
+  .contact p { margin-top: 20px; color: var(--muted); }
+  .mail { display: inline-block; margin-top: 28px; font: 500 clamp(1.05rem, 2.6vw, 1.5rem) var(--mono); color: var(--ink); text-decoration: none; border-bottom: 2px solid var(--hong); padding-bottom: 2px; word-break: break-all; }
+  .mail:hover { color: var(--accent); }
+  footer { border-top: 1px solid var(--line); padding-top: 24px; padding-bottom: 32px; font: 400 12px var(--mono); color: var(--muted); }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+
+  /* ── responsive ── */
+  @media (max-width: 900px) {
+    .hero .wrap, .feature-top, .about { grid-template-columns: minmax(0, 1fr); }
+    .hero .wrap { gap: 40px; }
+    .cam { max-height: 520px; }
+    .grid, .card.wide { grid-template-columns: minmax(0, 1fr); }
+    .card.wide .card-body { padding: 22px 24px 24px; }
+  }
+  @media (max-width: 560px) {
+    .wrap { padding-left: 16px; padding-right: 16px; }
+    .nav ul { gap: 16px; }
+    .hero { padding-top: 40px; padding-bottom: 64px; }
+    section.block { padding-top: 64px; padding-bottom: 64px; }
+    .feature { padding: 20px; }
+    .card-body { padding: 18px 18px 20px; }
+    .paper { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+    .stack div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  }
+  @media (max-width: 420px) {
+    .logo span { display: none; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .live i { animation: none; }
+    .frame::after, .steps i { transition: none; }
+  }
+</style>
 </head>
 <body>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">codextivity</div>
-  <ul class="nav-links">
-    <li><a href="#about">About</a></li>
-    <li><a href="#projects">Projects</a></li>
-    <li><a href="#stack">Stack</a></li>
-    <li><a href="#research">Research</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
+<nav class="nav" aria-label="Main">
+  <div class="wrap">
+    <a class="logo" href="#top"><i></i><span>codextivity</span></a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#research">Research</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
 </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-inner">
-    <div class="hero-label">// AI Engineer · aka Codextivity</div>
-    <h1 class="hero-name">
-      PANN VANDET<br>
-    </h1>
-    <p class="hero-role">
-      Building production AI systems at the intersection of
-      Computer Vision, LLM Engineering, and MLOps.
-      Currently at ZerOneDay — previously National Institute of Animal Science (NIAS), Jeonbuk National University (JBNU).
-    </p>
-    <div class="hero-stats">
-      <div class="stat-item">
-        <div class="stat-num">4</div>
-        <div class="stat-label">Deployed Projects</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">3</div>
-        <div class="stat-label">SCI(E) Papers</div>
-      </div>
-      <div class="stat-item">
-        <div class="stat-num">7+</div>
-        <div class="stat-label">Years Experience</div>
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <p class="eyebrow"><span class="dots" aria-hidden="true"><i></i><i></i></span>AI engineer · computer vision</p>
+      <h1 class="name"><span>Pann</span><span>Vandet</span></h1>
+      <p class="lede">
+        I build <strong>computer vision systems that run on real hardware</strong>: a taekwondo coaching kiosk
+        that watches a student through one webcam, PCB and PPE inspection models, and the LLM tools around them.
+        I also publish: three first-author SCI(E) papers on deep learning.
+      </p>
+      <ul class="proof">
+        <li><b>7+</b><span>years in AI</span></li>
+        <li><b>3</b><span>SCI(E) papers, first author</span></li>
+        <li><b>12</b><span>kiosk releases in 2026</span></li>
+      </ul>
+      <div class="cta">
+        <a class="btn primary" href="#work">See the work</a>
+        <a class="btn" href="https://github.com/codextivity" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="mailto:pvd.vandet@gmail.com">Email</a>
       </div>
     </div>
-    <div class="hero-cta">
-      <a href="#projects" class="btn-primary">View Projects</a>
-      <a href="https://github.com/codextivity" target="_blank" class="btn-ghost">GitHub</a>
-      <a href="mailto:pvd.vandet@gmail.com" class="btn-ghost">Contact</a>
-    </div>
+
+    <figure style="margin:0">
+      <div class="cam frame" style="--c:#7EA6EE">
+        <canvas id="pose" aria-hidden="true"></canvas>
+        <div class="hud top"><span class="live"><i></i>live · cam 0</span><span id="fc">frame 000000</span></div>
+        <div class="readout" aria-live="off">
+          <div class="move"><span class="ko" id="mv-ko">아래막기</span><span class="en" id="mv-en">low block</span></div>
+          <div class="steps" id="steps" aria-hidden="true"><i></i><i class="on"></i><i></i><i></i></div>
+        </div>
+      </div>
+      <figcaption class="cam-note">Animated sketch of what the kiosk sees: one performer, tracked and named move by move. Not real footage.</figcaption>
+    </figure>
   </div>
-</section>
+</header>
 
-<!-- ABOUT -->
-<section id="about">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-tag">// about</div>
-      <h2 class="section-title">Background</h2>
-    </div>
-    <div class="about-grid">
-      <div class="about-text">
-        <p>
-          I am an AI engineer with a strong foundation in
-          <strong>Computer Vision research</strong> and a deliberate move into
-          <strong>LLM engineering and MLOps</strong>. My work spans the full
-          pipeline — from training models to deploying them with proper monitoring.
-        </p>
-        <p>
-          At the National Institute of Animal Science, I developed deep learning
-          systems for livestock monitoring and published two SCI(E) papers as
-          first author. My MS research at Jeonbuk National University focused
-          on attention mechanisms for face recognition under occlusion.
-        </p>
-        <p>
-          I build systems that work in production — not just demos.
-          Every project includes MLOps infrastructure: experiment tracking,
-          data versioning, drift detection, and live monitoring.
-        </p>
-      </div>
-      <div class="about-facts">
-        <div class="fact-item">
-          <div class="fact-label">Current Role</div>
-          <div class="fact-value">Senior AI Developer · ZerOneDay (대리)</div>
-        </div>
-        <div class="fact-item">
-          <div class="fact-label">Education</div>
-          <div class="fact-value">MS Computer Science · Jeonbuk National University<br>
-          <span style="font-size:12px;color:var(--muted)">GKS Government Scholarship (NIIED) 2018–2021</span></div>
-        </div>
-        <div class="fact-item">
-          <div class="fact-label">Research</div>
-          <div class="fact-value">3 SCI(E) papers (1st author) · 7 conferences · Multiple software copyrights</div>
-        </div>
-        <div class="fact-item">
-          <div class="fact-label">Languages</div>
-          <div class="fact-value">English · Korean · Khmer (native)</div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-tag">// projects</div>
-      <h2 class="section-title">What I've Built</h2>
-    </div>
-
-    <div class="project-group-label">Personal Portfolio — open source</div>
-    <div class="projects-grid">
-
-      <div class="project-card">
-        <div class="project-icon">🔍</div>
-        <div class="project-title">PCB Defect Intelligence</div>
-        <div class="project-desc">
-          YOLOv11 defect detection across 6 PCB defect classes with
-          LangChain agent for natural language quality management queries.
-        </div>
-        <div class="project-metric">val mAP50: 0.903 · test mAP50: 0.772</div>
-        <div class="project-tags">
-          <span class="tag">YOLOv11</span>
-          <span class="tag">LangChain</span>
-          <span class="tag">FastAPI</span>
-          <span class="tag">Docker</span>
-        </div>
-        <div class="project-links">
-          <a href="https://pcb-defect-intelligence.onrender.com/docs" target="_blank" class="link-btn">Live Demo</a>
-          <a href="https://github.com/codextivity/pcb-defect-intelligence" target="_blank" class="link-btn">GitHub</a>
-        </div>
+<main>
+  <section class="block" id="work">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Selected work</p>
+        <h2>Not just the model. The whole system, shipped.</h2>
       </div>
 
-      <div class="project-card">
-        <div class="project-icon">🦺</div>
-        <div class="project-title">SafeVision PPE Compliance</div>
-        <div class="project-desc">
-          Construction site safety monitoring with tiered YOLO + GPT-4o
-          verification and full MLOps stack — MLflow, DVC, Evidently, Prometheus.
+      <article class="feature">
+        <div class="feature-top">
+          <div>
+            <p class="kicker">Featured · ZerOneDay · 2026</p>
+            <h3>AI Taekwondo Coaching Kiosk</h3>
+            <p>
+              A kiosk for taekwondo schools. It watches a student perform a poomsae through one webcam,
+              recognises every movement in order and scores it against skilled performers, live, with no server.
+              <strong>I owned the AI pipeline and the kiosk app</strong>, from the first model to a field test in a dojang
+              and the handover to a new team. My teammate built the voice AI coach.
+            </p>
+          </div>
+          <div class="stats">
+            <div><b>~28 fps</b><span>live on one consumer GPU</span></div>
+            <div><b>8 forms</b><span>Taegeuk 1–8</span></div>
+            <div><b>12</b><span>releases, Jul → Nov</span></div>
+            <div><b>1,372</b><span>automated tests</span></div>
+          </div>
         </div>
-        <div class="project-metric">mAP50: 0.755 · Safety Vest: 0.970</div>
-        <div class="project-tags">
-          <span class="tag">YOLOv11</span>
-          <span class="tag">MLflow</span>
-          <span class="tag">DVC</span>
-          <span class="tag">Prometheus</span>
+        <div class="figure frame">
+          <img src="images/kiosk-pipeline.svg" width="960" height="300" alt="Pipeline: webcam, person detection and pose, performer tracking, LSTM classifier, step segmenter, scoring against reference performers, then the practice, exam and report screens.">
         </div>
-        <div class="project-links">
-          <a href="https://github.com/codextivity/safevision" target="_blank" class="link-btn">GitHub</a>
+        <div class="feature-foot">
+          <ul class="tags"><li>RTMPose</li><li>YOLO26</li><li>LSTM</li><li>DTW</li><li>ONNX Runtime</li><li>PySide6</li></ul>
+          <div class="links"><a href="https://github.com/codextivity/poomsae-kiosk-case-study" target="_blank" rel="noopener">Read the case study →</a></div>
         </div>
+      </article>
+
+      <div class="sub">
+        <h3>Open-source projects</h3>
+        <p>Live demos run on a free tier and can take a minute to wake up.</p>
+      </div>
+      <div class="grid">
+
+        <article class="card">
+          <div class="thumb frame" style="--c:#E8705F">
+            <img src="images/pcb-prediction.jpg" width="960" height="674" loading="lazy" alt="A PCB test image with six mouse-bite defects found by the model, each boxed with a confidence between 0.79 and 0.83.">
+            <span class="chip">my model · test image</span>
+          </div>
+          <div class="card-body">
+            <h4>PCB Defect Intelligence</h4>
+            <p>YOLOv11 finds six kinds of PCB defects, and a LangChain agent answers quality questions in plain language.</p>
+            <div class="metric"><b>0.903</b><span>val mAP50 · 0.772 on the test set</span></div>
+            <ul class="tags"><li>YOLOv11</li><li>LangChain</li><li>FastAPI</li><li>Docker</li></ul>
+            <div class="links">
+              <a href="https://pcb-defect-intelligence.onrender.com/docs" target="_blank" rel="noopener">Live demo ↗</a>
+              <a href="https://github.com/codextivity/pcb-defect-intelligence" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb frame">
+            <svg viewBox="0 0 400 250" role="img" aria-label="Drawing: two workers. One wears a hardhat and vest, both boxed in blue. The other has no hardhat, boxed in red.">
+              <rect class="t-bg" width="400" height="250"/>
+              <line class="t-grid" x1="0" y1="214" x2="400" y2="214"/>
+              <!-- worker with hardhat -->
+              <circle class="t-fig" cx="140" cy="96" r="13"/>
+              <path class="t-solid" d="M124 92 Q140 70 156 92 Z"/>
+              <rect class="t-fig" x="122" y="116" width="36" height="52" rx="6"/>
+              <line class="t-fig" x1="122" y1="132" x2="158" y2="132"/><line class="t-fig" x1="122" y1="148" x2="158" y2="148"/>
+              <path class="t-fig" d="M122 122 L108 162 M158 122 L172 162 M132 168 L128 210 M148 168 L152 210"/>
+              <rect class="t-box" x="118" y="70" width="44" height="42"/>
+              <rect class="t-chip" x="118" y="54" width="62" height="16"/><text class="t-chip-t" x="123" y="66">hardhat</text>
+              <rect class="t-box" x="114" y="114" width="52" height="58"/>
+              <rect class="t-chip" x="114" y="172" width="34" height="16"/><text class="t-chip-t" x="119" y="184">vest</text>
+              <!-- worker without hardhat -->
+              <circle class="t-fig" cx="264" cy="98" r="13"/>
+              <rect class="t-fig" x="246" y="116" width="36" height="52" rx="6"/>
+              <line class="t-fig" x1="246" y1="132" x2="282" y2="132"/><line class="t-fig" x1="246" y1="148" x2="282" y2="148"/>
+              <path class="t-fig" d="M246 122 L236 160 M282 122 L300 150 M256 168 L250 210 M272 168 L278 210"/>
+              <rect class="t-bad" x="244" y="76" width="40" height="38"/>
+              <rect class="t-chip-bad" x="244" y="60" width="84" height="16"/><text class="t-chip-t" x="249" y="72">no-hardhat</text>
+              <rect class="t-box" x="238" y="114" width="52" height="58"/>
+              <text class="t-s" x="30" y="236">tier 1 YOLOv11 · tier 2 GPT-4o check</text>
+            </svg>
+          </div>
+          <div class="card-body">
+            <h4>SafeVision PPE Compliance</h4>
+            <p>Construction-site safety checks: YOLO first, GPT-4o verification for the unsure cases, and a full MLOps stack around it.</p>
+            <div class="metric"><b>0.755</b><span>mAP50 · 0.970 on safety vests</span></div>
+            <ul class="tags"><li>YOLOv11</li><li>MLflow</li><li>DVC</li><li>Evidently</li><li>Prometheus</li></ul>
+            <div class="links">
+              <a href="https://github.com/codextivity/safevision" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb frame">
+            <svg viewBox="0 0 400 250" role="img" aria-label="Diagram: a question goes to an agent, which answers from documents, uses a calculator, or searches the web.">
+              <rect class="t-bg" width="400" height="250"/>
+              <rect class="t-node" x="20" y="104" width="86" height="40" rx="4"/><text class="t-t" x="63" y="129" text-anchor="middle">question</text>
+              <rect class="t-node-on" x="140" y="98" width="96" height="52" rx="4"/><text class="t-t" x="188" y="121" text-anchor="middle">agent</text><text class="t-s" x="188" y="138" text-anchor="middle">LangGraph</text>
+              <line class="t-ln" x1="106" y1="124" x2="138" y2="124"/>
+              <rect class="t-node-on" x="272" y="40" width="112" height="40" rx="4"/><text class="t-t" x="328" y="65" text-anchor="middle">your documents</text>
+              <rect class="t-node" x="272" y="104" width="112" height="40" rx="4"/><text class="t-t" x="328" y="129" text-anchor="middle">calculator</text>
+              <rect class="t-node" x="272" y="168" width="112" height="40" rx="4"/><text class="t-t" x="328" y="193" text-anchor="middle">web search</text>
+              <path class="t-ln-on" d="M236 112 C254 112 254 60 270 60"/>
+              <line class="t-ln" x1="236" y1="124" x2="270" y2="124"/>
+              <path class="t-ln" d="M236 136 C254 136 254 188 270 188"/>
+              <text class="t-s" x="30" y="236">history-aware RAG · ChromaDB · LangSmith evals</text>
+            </svg>
+          </div>
+          <div class="card-body">
+            <h4>LangChain Research Copilot</h4>
+            <p>A RAG assistant that remembers the conversation, picks a tool when the documents aren't enough, and is scored with LangSmith.</p>
+            <div class="metric"><b>1.00</b><span>correctness · 0.90+ faithfulness on a 20-question benchmark</span></div>
+            <ul class="tags"><li>LangChain</li><li>LangGraph</li><li>ChromaDB</li><li>RAG</li></ul>
+            <div class="links">
+              <a href="https://langchain-copilot.onrender.com/docs" target="_blank" rel="noopener">Live demo ↗</a>
+              <a href="https://github.com/codextivity/langchain-copilot" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+          </div>
+        </article>
+
+        <article class="card">
+          <div class="thumb frame">
+            <svg viewBox="0 0 400 250" role="img" aria-label="Diagram: a supervisor routes each question to one of five nodes: text, vision, tools, compare and web.">
+              <rect class="t-bg" width="400" height="250"/>
+              <rect class="t-node-on" x="24" y="98" width="124" height="52" rx="4"/><text class="t-t" x="86" y="121" text-anchor="middle">supervisor</text><text class="t-s" x="86" y="138" text-anchor="middle">routes by type</text>
+              <g>
+                <rect class="t-node" x="196" y="14" width="188" height="32" rx="4"/><text class="t-t" x="210" y="35">text</text><text class="t-s" x="372" y="35" text-anchor="end">PDF text</text>
+                <rect class="t-node-on" x="196" y="56" width="188" height="32" rx="4"/><text class="t-t" x="210" y="77">vision</text><text class="t-s" x="372" y="77" text-anchor="end">charts, scans</text>
+                <rect class="t-node" x="196" y="98" width="188" height="32" rx="4"/><text class="t-t" x="210" y="119">tools</text><text class="t-s" x="372" y="119" text-anchor="end">calculate</text>
+                <rect class="t-node" x="196" y="140" width="188" height="32" rx="4"/><text class="t-t" x="210" y="161">compare</text><text class="t-s" x="372" y="161" text-anchor="end">chart vs text</text>
+                <rect class="t-node" x="196" y="182" width="188" height="32" rx="4"/><text class="t-t" x="210" y="203">web</text><text class="t-s" x="372" y="203" text-anchor="end">current data</text>
+              </g>
+              <path class="t-ln" d="M148 116 C172 116 172 30 194 30"/>
+              <path class="t-ln-on" d="M148 120 C172 120 172 72 194 72"/>
+              <path class="t-ln" d="M148 124 L194 114"/>
+              <path class="t-ln" d="M148 128 C172 128 172 156 194 156"/>
+              <path class="t-ln" d="M148 132 C172 132 172 198 194 198"/>
+              <text class="t-s" x="30" y="238">GPT-4o Vision · LangGraph · PyMuPDF</text>
+            </svg>
+          </div>
+          <div class="card-body">
+            <h4>Multimodal Doc Intelligence</h4>
+            <p>Answers questions over text PDFs, charts, scanned pages and images, sending each question to the node built for that content.</p>
+            <div class="metric"><b>5</b><span>routing nodes in one LangGraph supervisor</span></div>
+            <ul class="tags"><li>GPT-4o Vision</li><li>LangGraph</li><li>PyMuPDF</li><li>RAG</li></ul>
+            <div class="links">
+              <a href="https://multimodal-doc-intelligence.onrender.com/docs" target="_blank" rel="noopener">Live demo ↗</a>
+              <a href="https://github.com/codextivity/multimodal-doc-intelligence" target="_blank" rel="noopener">GitHub ↗</a>
+            </div>
+          </div>
+        </article>
       </div>
 
-      <div class="project-card">
-        <div class="project-icon">🤖</div>
-        <div class="project-title">LangChain Research Copilot</div>
-        <div class="project-desc">
-          Production RAG system with history-aware retrieval, tool-calling
-          agents, and LangSmith evaluation pipeline.
-        </div>
-        <div class="project-metric">Correctness: 1.0 · Faithfulness: 0.92</div>
-        <div class="project-tags">
-          <span class="tag">LangChain</span>
-          <span class="tag">LangGraph</span>
-          <span class="tag">ChromaDB</span>
-          <span class="tag">RAG</span>
-        </div>
-        <div class="project-links">
-          <a href="https://langchain-copilot.onrender.com/docs" target="_blank" class="link-btn">Live Demo</a>
-          <a href="https://github.com/codextivity/langchain-copilot" target="_blank" class="link-btn">GitHub</a>
-        </div>
+      <div class="sub">
+        <h3>Also at ZerOneDay</h3>
+        <p>Early research, not continued.</p>
       </div>
-
-      <div class="project-card">
-        <div class="project-icon">📄</div>
-        <div class="project-title">Multimodal Doc Intelligence</div>
-        <div class="project-desc">
-          Handles text PDFs, charts, scanned documents, and images via
-          GPT-4o Vision with a 5-node LangGraph routing supervisor.
-        </div>
-        <div class="project-metric">5 content types · 5 routing nodes</div>
-        <div class="project-tags">
-          <span class="tag">GPT-4o Vision</span>
-          <span class="tag">LangGraph</span>
-          <span class="tag">PyMuPDF</span>
-          <span class="tag">RAG</span>
-        </div>
-        <div class="project-links">
-          <a href="https://multimodal-doc-intelligence.onrender.com/docs" target="_blank" class="link-btn">Live Demo</a>
-          <a href="https://github.com/codextivity/multimodal-doc-intelligence" target="_blank" class="link-btn">GitHub</a>
-        </div>
-      </div>
-
-    </div>
-
-    <div class="project-group-label" style="margin-top:1.5rem;">Professional Experience — ZerOneDay</div>
-    <div class="projects-grid professional">
-
-      <div class="project-card">
-        <div class="project-icon">🥋</div>
-        <div class="project-title">Taekwondo Poomsae AI Coaching</div>
-        <div class="project-desc">
-          Real-time kiosk coaching system combining pose estimation,
-          time-series motion recognition, and LLM-generated feedback.
-        </div>
-        <div class="project-metric">RTMPose · Beat-Anchored DTW · GPT-4o</div>
-        <div class="project-tags">
-          <span class="tag">RTMPose</span>
-          <span class="tag">DTW</span>
-          <span class="tag">LLM</span>
-          <span class="tag">GPU Opt</span>
-        </div>
-        <div class="project-links">
-          <span class="link-btn no-link">Proprietary</span>
-        </div>
-      </div>
-
-      <div class="project-card">
-        <div class="project-icon">💃</div>
-        <div class="project-title">K-POP AI Dance Coaching</div>
-        <div class="project-desc">
-          Multi-person dance analysis with member identification,
-          beat-synchronized motion comparison, and automated scoring.
-        </div>
-        <div class="project-metric">BotSort · InsightFace · Beat-Anchored DTW</div>
-        <div class="project-tags">
-          <span class="tag">BotSort</span>
-          <span class="tag">InsightFace</span>
-          <span class="tag">Computer Vision</span>
-        </div>
-        <div class="project-links">
-          <span class="link-btn no-link">Proprietary</span>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- TECH STACK -->
-<section id="stack">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-tag">// stack</div>
-      <h2 class="section-title">Tech Stack</h2>
-    </div>
-    <div class="stack-grid">
-      <div class="stack-group">
-        <div class="stack-group-title">Computer Vision</div>
-        <div class="stack-items">
-          <div class="stack-item">YOLOv11 / Ultralytics</div>
-          <div class="stack-item">OpenCV / MediaPipe</div>
-          <div class="stack-item">RTMPose / InsightFace</div>
-          <div class="stack-item">ONNX / TensorRT</div>
-          <div class="stack-item">DTW / BotSort</div>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-group-title">LLM / RAG</div>
-        <div class="stack-items">
-          <div class="stack-item">LangChain / LangGraph</div>
-          <div class="stack-item">LangSmith (evaluation)</div>
-          <div class="stack-item">GPT-4o / GPT-4o Vision</div>
-          <div class="stack-item">ChromaDB (vector store)</div>
-          <div class="stack-item">RAG pipelines</div>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-group-title">MLOps</div>
-        <div class="stack-items">
-          <div class="stack-item">MLflow (experiment tracking)</div>
-          <div class="stack-item">DVC (data versioning)</div>
-          <div class="stack-item">Evidently (drift detection)</div>
-          <div class="stack-item">Prometheus / Grafana</div>
-          <div class="stack-item">GitHub Actions (CI/CD)</div>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-group-title">Deep Learning</div>
-        <div class="stack-items">
-          <div class="stack-item">PyTorch / TensorFlow</div>
-          <div class="stack-item">LSTM / Transformer</div>
-          <div class="stack-item">DCNN / Attention Mechanism</div>
-          <div class="stack-item">scikit-learn / NumPy</div>
-          <div class="stack-item">Librosa (audio)</div>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-group-title">Backend / Deploy</div>
-        <div class="stack-items">
-          <div class="stack-item">FastAPI / REST API</div>
-          <div class="stack-item">Docker / Docker Compose</div>
-          <div class="stack-item">SQLite / MySQL</div>
-          <div class="stack-item">Render (cloud deploy)</div>
-          <div class="stack-item">Python / Java / C++</div>
-        </div>
-      </div>
-      <div class="stack-group">
-        <div class="stack-group-title">Tools</div>
-        <div class="stack-items">
-          <div class="stack-item">Git / GitHub / GitLab</div>
-          <div class="stack-item">Roboflow (datasets)</div>
-          <div class="stack-item">Jira / Notion / Trello</div>
-          <div class="stack-item">CUDA / RTX 5080</div>
-          <div class="stack-item">Linux / Windows</div>
-        </div>
+      <div class="grid">
+        <article class="card wide">
+          <div class="thumb frame">
+            <svg viewBox="0 0 400 250" role="img" aria-label="Drawing: three dancers, each tracked with its own ID box, above a strip of music beats.">
+              <rect class="t-bg" width="400" height="250"/>
+              <g transform="translate(96 0)">
+                <circle class="t-fig" cx="0" cy="68" r="11"/>
+                <path class="t-fig" d="M0 80 L0 130 M0 92 L-22 110 L-30 84 M0 92 L22 104 L36 96 M0 130 L-14 164 L-20 196 M0 130 L14 164 L18 196"/>
+                <rect class="t-box" x="-42" y="48" width="84" height="154"/>
+                <rect class="t-chip" x="-42" y="32" width="38" height="16"/><text class="t-chip-t" x="-37" y="44">ID 1</text>
+              </g>
+              <g transform="translate(200 0)">
+                <circle class="t-fig" cx="0" cy="66" r="11"/>
+                <path class="t-fig" d="M0 78 L0 128 M0 90 L-24 80 L-30 54 M0 90 L24 80 L30 54 M0 128 L-20 160 L-30 194 M0 128 L20 160 L30 194"/>
+                <rect class="t-box" x="-42" y="44" width="84" height="156"/>
+                <rect class="t-chip" x="-42" y="28" width="38" height="16"/><text class="t-chip-t" x="-37" y="40">ID 2</text>
+              </g>
+              <g transform="translate(304 0)">
+                <circle class="t-fig" cx="0" cy="68" r="11"/>
+                <path class="t-fig" d="M0 80 L0 130 M0 92 L-26 100 L-38 118 M0 92 L22 110 L30 84 M0 130 L-12 166 L-14 196 M0 130 L18 160 L34 186"/>
+                <rect class="t-box" x="-44" y="48" width="88" height="154"/>
+                <rect class="t-chip" x="-44" y="32" width="38" height="16"/><text class="t-chip-t" x="-39" y="44">ID 3</text>
+              </g>
+              <g>
+                <line class="t-tick" x1="40" y1="222" x2="40" y2="232"/><line class="t-tick" x1="80" y1="222" x2="80" y2="232"/>
+                <line class="t-tick" x1="120" y1="222" x2="120" y2="232"/><line class="t-tick" x1="160" y1="222" x2="160" y2="232"/>
+                <line class="t-tick-on" x1="200" y1="218" x2="200" y2="236"/><line class="t-tick" x1="240" y1="222" x2="240" y2="232"/>
+                <line class="t-tick" x1="280" y1="222" x2="280" y2="232"/><line class="t-tick" x1="320" y1="222" x2="320" y2="232"/>
+                <line class="t-tick" x1="360" y1="222" x2="360" y2="232"/>
+              </g>
+            </svg>
+          </div>
+          <div class="card-body">
+            <p class="kicker">Preliminary research</p>
+            <h4>K-POP AI Dance Coaching</h4>
+            <p>An early study of multi-person dance coaching: telling group members apart, and lining each dancer's moves up with the music's beats to compare them. The company didn't continue the project.</p>
+            <ul class="tags"><li>BotSort</li><li>InsightFace</li><li>Beat-anchored DTW</li></ul>
+          </div>
+        </article>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- RESEARCH -->
-<section id="research">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-tag">// research</div>
-      <h2 class="section-title">Publications</h2>
+  <section class="block" id="research">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">Research</p>
+        <h2>Three first-author SCI(E) papers.</h2>
+      </div>
+      <div class="papers">
+        <div class="paper">
+          <div class="yr">2026</div>
+          <div>
+            <a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=ABTZd3kAAAAJ&amp;citation_for_view=ABTZd3kAAAAJ:WqliGbK-hY8C" target="_blank" rel="noopener">Robustness of CNN-Based Model Assessment for Pig Vocalization Classification Across Diverse Acoustic Environments ↗</a>
+            <p><i>Computers and Electronics in Agriculture</i> · <b>First author</b> · National Institute of Animal Science</p>
+          </div>
+        </div>
+        <div class="paper">
+          <div class="yr">2024</div>
+          <div>
+            <a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=ABTZd3kAAAAJ&amp;citation_for_view=ABTZd3kAAAAJ:tkaPQYYpVKoC" target="_blank" rel="noopener">DCNN for Pig Vocalization and Non-Vocalization Classification: Evaluate Model Robustness with New Data ↗</a>
+            <p><i>Animals</i> · <b>First author</b> · National Institute of Animal Science</p>
+          </div>
+        </div>
+        <div class="paper">
+          <div class="yr">2022</div>
+          <div>
+            <a href="https://scholar.google.com/citations?view_op=view_citation&amp;hl=en&amp;user=ABTZd3kAAAAJ&amp;citation_for_view=ABTZd3kAAAAJ:qUcmZB5y_30C" target="_blank" rel="noopener">Effective Attention-Based Mechanism for Masked Face Recognition ↗</a>
+            <p><i>Applied Sciences</i> · <b>First author</b> · Jeonbuk National University</p>
+          </div>
+        </div>
+      </div>
+      <p class="more">Plus 7 conference papers and several software copyrights. <a href="https://scholar.google.com/citations?user=ABTZd3kAAAAJ" target="_blank" rel="noopener">Google Scholar ↗</a></p>
     </div>
-    <div class="paper-list">
-      <div class="paper-item">
-        <div class="paper-year">2026 · Computers and Electronics in Agriculture</div>
-        <div class="paper-title">
-          <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ABTZd3kAAAAJ&citation_for_view=ABTZd3kAAAAJ:WqliGbK-hY8C"
-             target="_blank" style="color:var(--text);text-decoration:none;"
-             onmouseover="this.style.color='var(--accent2)'"
-             onmouseout="this.style.color='var(--text)'">
-            Robustness of CNN-Based Model Assessment for Pig Vocalization Classification
-            Across Diverse Acoustic Environments ↗
-          </a>
-        </div>
-        <div class="paper-meta">
-          <span>First Author</span> · National Institute of Animal Science
-        </div>
-      </div>
-      <div class="paper-item">
-        <div class="paper-year">2024 · Animals</div>
-        <div class="paper-title">
-           <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ABTZd3kAAAAJ&citation_for_view=ABTZd3kAAAAJ:tkaPQYYpVKoC"
-             target="_blank" style="color:var(--text);text-decoration:none;"
-             onmouseover="this.style.color='var(--accent2)'"
-             onmouseout="this.style.color='var(--text)'">
-            DCNN for Pig Vocalization and Non-Vocalization Classification:
-            Evaluate Model Robustness with New Data ↗
-          </a>
-        </div>
-        <div class="paper-meta">
-          <span>First Author</span> · National Institute of Animal Science
-        </div>
-      </div>
-      <div class="paper-item">
-        <div class="paper-year">2022 · Applied Sciences</div>
-        <div class="paper-title">
-          <a href="https://scholar.google.com/citations?view_op=view_citation&hl=en&user=ABTZd3kAAAAJ&citation_for_view=ABTZd3kAAAAJ:qUcmZB5y_30C"
-             target="_blank" style="color:var(--text);text-decoration:none;"
-             onmouseover="this.style.color='var(--accent2)'"
-             onmouseout="this.style.color='var(--text)'">
-            Effective Attention-Based Mechanism for Masked Face Recognition ↗
-          </a>
-        </div>
-        <div class="paper-meta">
-          <span>First Author</span> · Jeonbuk National University
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+  </section>
 
-<!-- CONTACT -->
-<section id="contact">
-  <div class="container">
-    <div class="section-header" style="text-align:center;">
-      <div class="section-tag" style="text-align:center;">// contact</div>
-      <h2 class="section-title">Get In Touch</h2>
+  <section class="block" id="about">
+    <div class="wrap">
+      <div class="head">
+        <p class="label">About</p>
+        <h2>From research to systems people use.</h2>
+      </div>
+      <div class="about">
+        <div class="about-text">
+          <p>I'm an AI engineer with a background in <strong>computer vision research</strong> and a deliberate move into <strong>LLM engineering and MLOps</strong>. My work covers the whole path, from training a model to running it on the customer's hardware.</p>
+          <p>At the National Institute of Animal Science I built deep learning systems for livestock monitoring and published two SCI(E) papers as first author. My MS research at Jeonbuk National University was on attention mechanisms for face recognition under occlusion.</p>
+          <p>I care about what happens after training: packaging, monitoring, releases, tests, and documentation good enough that a new team can take over.</p>
+        </div>
+        <dl class="facts">
+          <div><dt>Current role</dt><dd>Senior AI Developer · ZerOneDay (대리)</dd></div>
+          <div><dt>Education</dt><dd>MS Computer Science · Jeonbuk National University<small>GKS Government Scholarship (NIIED), 2018–2021</small></dd></div>
+          <div><dt>Languages</dt><dd>English · Korean · Khmer (native)</dd></div>
+          <div><dt>Based in</dt><dd>Jeonju, Korea</dd></div>
+        </dl>
+      </div>
+
+      <dl class="stack">
+        <div><dt>Vision</dt><dd>YOLO (v11, 26) · RTMPose · InsightFace · OpenCV · MediaPipe · DTW · BotSort</dd></div>
+        <div><dt>LLM</dt><dd>LangChain · LangGraph · LangSmith · GPT-4o / Vision · ChromaDB · RAG</dd></div>
+        <div><dt>Deep learning</dt><dd>PyTorch · TensorFlow · LSTM · Transformer · attention · scikit-learn · Librosa</dd></div>
+        <div><dt>MLOps</dt><dd>MLflow · DVC · Evidently · Prometheus / Grafana · GitHub Actions</dd></div>
+        <div><dt>Deploy</dt><dd>ONNX Runtime · TensorRT · CUDA · FastAPI · Docker · PySide6 / QML · PyInstaller · SQLite · MySQL</dd></div>
+        <div><dt>Code</dt><dd>Python · Java · C++ · Git · Linux / Windows</dd></div>
+      </dl>
     </div>
-    <p class="contact-desc">
-      Open to senior AI engineering roles in computer vision and LLM systems.
-      Based in Jeonju, Korea.
-    </p>
-    <div class="contact-links">
-      <a href="https://github.com/codextivity" target="_blank" class="btn-primary">GitHub</a>
-      <a href="https://scholar.google.com/citations?user=ABTZd3kAAAAJ" 
-         target="_blank" class="btn-ghost">
-        Google Scholar
-      </a>
-      <a href="mailto:pvd.vandet@gmail.com" class="btn-ghost">Email</a>
+  </section>
+
+  <section class="block contact" id="contact">
+    <div class="wrap">
+      <p class="label">Contact</p>
+      <h2 style="margin-top:12px">Let's talk about <span>vision systems that ship.</span></h2>
+      <p>Computer vision, pose estimation, LLM tools, or getting a model onto real hardware.</p>
+      <a class="mail" href="mailto:pvd.vandet@gmail.com">pvd.vandet@gmail.com</a>
+      <div class="cta">
+        <a class="btn" href="https://github.com/codextivity" target="_blank" rel="noopener">GitHub</a>
+        <a class="btn" href="https://scholar.google.com/citations?user=ABTZd3kAAAAJ" target="_blank" rel="noopener">Google Scholar</a>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+</main>
 
 <footer>
-  <div>PANN VANDET · codextivity · built with HTML/CSS</div>
+  <div class="wrap">
+    <span>Pann Vandet · codextivity</span>
+    <span>PCB image: PCB Defect dataset, Roboflow Universe (CC BY 4.0)</span>
+  </div>
 </footer>
 
+<script>
+(() => {
+  const cv = document.getElementById('pose');
+  if (!cv) return;
+  const ctx = cv.getContext('2d');
+  const fc = document.getElementById('fc');
+  const ko = document.getElementById('mv-ko');
+  const en = document.getElementById('mv-en');
+  const segs = Array.from(document.querySelectorAll('#steps i'));
+
+  // joints: nose, shoulders, elbows, wrists, hips, knees, ankles, toes (L/R = screen side)
+  // units: body height ~1, origin at the hips
+  const POSES = {
+    ready: [[0,-.42], [-.09,-.30],[.09,-.30], [-.11,-.15],[.11,-.15], [-.04,-.04],[.04,-.04], [-.055,0],[.055,0], [-.065,.21],[.065,.21], [-.07,.42],[.07,.42], [-.10,.44],[.10,.44]],
+    low:   [[-.02,-.37], [-.11,-.25],[.07,-.255], [-.16,-.10],[.15,-.08], [-.19,.10],[.085,.04], [-.065,.05],[.045,.05], [-.17,.22],[.12,.24], [-.20,.43],[.19,.43], [-.24,.44],[.22,.44]],
+    punch: [[.02,-.37], [-.07,-.255],[.11,-.25], [-.15,-.08],[.22,-.245], [-.085,.04],[.34,-.24], [-.045,.05],[.065,.05], [-.12,.24],[.17,.22], [-.19,.43],[.20,.43], [-.22,.44],[.24,.44]],
+    high:  [[-.02,-.37], [-.11,-.25],[.07,-.255], [-.17,-.40],[.15,-.08], [.06,-.50],[.085,.04], [-.065,.05],[.045,.05], [-.17,.22],[.12,.24], [-.20,.43],[.19,.43], [-.24,.44],[.22,.44]]
+  };
+  const SEQ = [
+    { k: 'ready', ko: '준비 서기', en: 'ready stance' },
+    { k: 'low',   ko: '아래막기',  en: 'low block' },
+    { k: 'punch', ko: '몸통 지르기', en: 'middle punch' },
+    { k: 'high',  ko: '얼굴 막기', en: 'high block' }
+  ];
+  // indices: 0 nose, 1 shL, 2 shR, 3 elL, 4 elR, 5 wrL, 6 wrR, 7 hipL, 8 hipR, 9 knL, 10 knR, 11 anL, 12 anR, 13 toeL, 14 toeR
+  const BONES = [[1,2],[1,3],[3,5],[2,4],[4,6],[1,7],[2,8],[7,8],[7,9],[9,11],[11,13],[8,10],[10,12],[12,14]];
+  const C = { grid: '#1B2330', bone: '#D5DEEA', kp: '#E8705F', box: '#7EA6EE', boxText: '#0B0F15', trail: 'rgba(126,166,238,' };
+  const MOVE = .5, HOLD = 1.25, STEP = MOVE + HOLD;
+  const ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+  const trails = [[], []];
+  let W = 0, H = 0, dpr = 1, shown = -1;
+
+  function size() {
+    const r = cv.getBoundingClientRect();
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = r.width; H = r.height;
+    cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr);
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function poseAt(t) {
+    const n = SEQ.length;
+    const i = Math.floor(t / STEP) % n;
+    const local = t % STEP;
+    const from = POSES[SEQ[(i + n - 1) % n].k], to = POSES[SEQ[i].k];
+    const a = local < MOVE ? ease(local / MOVE) : 1;
+    const bob = Math.sin(t * 2.1) * .003;
+    return { i, labelI: local > MOVE * .6 ? i : (i + n - 1) % n, pts: to.map((p, j) => [from[j][0] + (p[0] - from[j][0]) * a, from[j][1] + (p[1] - from[j][1]) * a + bob]) };
+  }
+
+  function draw(t) {
+    const { labelI, pts } = poseAt(t);
+    const s = Math.min(H * .66, W * .9), ox = W / 2, oy = H * .47;
+    const P = pts.map(([x, y]) => [ox + x * s, oy + y * s]);
+    ctx.clearRect(0, 0, W, H);
+
+    // floor grid in perspective
+    ctx.strokeStyle = C.grid; ctx.lineWidth = 1;
+    const fy = oy + .45 * s;
+    for (let k = 0; k < 5; k++) { const y = fy + k * k * 6 + k * 8; ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+    for (let k = -6; k <= 6; k++) { ctx.beginPath(); ctx.moveTo(ox + k * 30, fy); ctx.lineTo(ox + k * 90, H); ctx.stroke(); }
+
+    // wrist trails
+    [5, 6].forEach((j, n) => { trails[n].push(P[j]); if (trails[n].length > 14) trails[n].shift(); });
+    trails.forEach(tr => { for (let k = 1; k < tr.length; k++) { ctx.strokeStyle = C.trail + (k / tr.length * .5) + ')'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(tr[k-1][0], tr[k-1][1]); ctx.lineTo(tr[k][0], tr[k][1]); ctx.stroke(); } });
+
+    // tracking box
+    const xs = P.map(p => p[0]), ys = P.map(p => p[1]);
+    const pad = .045 * s;
+    const x1 = Math.min(...xs) - pad, x2 = Math.max(...xs) + pad;
+    const y1 = Math.min(...ys, P[0][1] - .07 * s) - pad, y2 = Math.max(...ys) + pad * .6;
+    ctx.strokeStyle = 'rgba(126,166,238,.35)'; ctx.lineWidth = 1; ctx.strokeRect(x1, y1, x2 - x1, y2 - y1);
+    ctx.strokeStyle = C.box; ctx.lineWidth = 2.5;
+    const L = 16;
+    [[x1, y1, 1, 1], [x2, y1, -1, 1], [x1, y2, 1, -1], [x2, y2, -1, -1]].forEach(([x, y, sx, sy]) => {
+      ctx.beginPath(); ctx.moveTo(x + sx * L, y); ctx.lineTo(x, y); ctx.lineTo(x, y + sy * L); ctx.stroke();
+    });
+    ctx.font = '500 11px "IBM Plex Mono", Consolas, monospace';
+    const lab = 'performer · id 1';
+    const tw = ctx.measureText(lab).width + 12;
+    ctx.fillStyle = C.box; ctx.fillRect(x1, y1 - 20, tw, 18);
+    ctx.fillStyle = C.boxText; ctx.fillText(lab, x1 + 6, y1 - 7);
+
+    // head, bones, keypoints
+    ctx.strokeStyle = 'rgba(213,222,234,.55)'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(P[0][0], P[0][1] - .015 * s, .05 * s, 0, Math.PI * 2); ctx.stroke();
+    const neck = [(P[1][0] + P[2][0]) / 2, (P[1][1] + P[2][1]) / 2];
+    ctx.strokeStyle = C.bone; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(neck[0], neck[1]); ctx.lineTo(P[0][0], P[0][1] + .035 * s); ctx.stroke();
+    BONES.forEach(([a, b]) => { ctx.beginPath(); ctx.moveTo(P[a][0], P[a][1]); ctx.lineTo(P[b][0], P[b][1]); ctx.stroke(); });
+    P.forEach(([x, y], j) => {
+      ctx.fillStyle = '#0B0F15'; ctx.beginPath(); ctx.arc(x, y, 5.5, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = C.kp; ctx.beginPath(); ctx.arc(x, y, 3.6, 0, Math.PI * 2); ctx.fill();
+    });
+
+    if (labelI !== shown) {
+      shown = labelI;
+      ko.textContent = SEQ[labelI].ko; en.textContent = SEQ[labelI].en;
+      segs.forEach((g, k) => { g.className = k === labelI ? 'on' : (k < labelI ? 'done' : ''); });
+    }
+    fc.textContent = 'frame ' + String(Math.floor(t * 28)).padStart(6, '0');
+  }
+
+  const still = window.matchMedia('(prefers-reduced-motion: reduce)');
+  let running = false, visible = true, t0 = performance.now() - STEP * 1000 * 1.9;
+  function loop(now) {
+    if (!running) return;
+    draw((now - t0) / 1000);
+    requestAnimationFrame(loop);
+  }
+  function update() {
+    const want = visible && !document.hidden && !still.matches;
+    if (want && !running) { running = true; requestAnimationFrame(loop); }
+    if (!want) { running = false; if (still.matches) { trails[0].length = trails[1].length = 0; draw(STEP * 1.9); } }
+  }
+  size();
+  draw(STEP * 1.9);
+  new ResizeObserver(() => { size(); draw((performance.now() - t0) / 1000); }).observe(cv);
+  if ('IntersectionObserver' in window) new IntersectionObserver(e => { visible = e[0].isIntersecting; update(); }).observe(cv);
+  document.addEventListener('visibilitychange', update);
+  still.addEventListener && still.addEventListener('change', update);
+  update();
+})();
+</script>
 </body>
 </html>
